@@ -21,6 +21,9 @@ func move(delta):
 		velocity.x = -velocity.x
 		move_and_slide(velocity, Vector2(0,-1))
 
+func object_type() -> String:
+	return "enemy"
+
 func _process(delta):
 	move(delta)
 	

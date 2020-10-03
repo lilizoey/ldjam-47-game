@@ -34,3 +34,6 @@ texture = ExtResource( 2 )
 [node name="Sprites" type="AnimatedSprite" parent="."]
 position = Vector2( 0, 1 )
 frames = SubResource( 2 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true

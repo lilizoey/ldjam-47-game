@@ -257,6 +257,18 @@ func crawl(delta):
 	if not (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right")):
 		state = State.crawl_to_crouch
 
+func fire():
+	var bullet: KinematicBody2D = bullet_scene.instance()
+	bullet.bullet_speed = bullet_speed
+	bullet.global_position = $Gun/Sprite.global_position
+	#TODO actualy make this shoot from the right place
+	bullet.translate(Vector2(0,-6).rotated($Gun.rotation))
+	bullet.rotation = $Gun.rotation
+	get_node(world_root).add_child(bullet)
+
+func object_type() -> String:
+	return "player"
+
 var i = 0
 func _process(delta):
 	$Gun.look_at(mouse_position)
@@ -330,15 +342,10 @@ func _input(event):
 	if event is InputEventMouseMotion:
 		mouse_position = event.position
 
-	#if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
-	#	fire()
+	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
+		fire()
 
-#func fire():
-#	var bullet: KinematicBody2D = bullet_scene.instance()
-#	bullet.bullet_speed = bullet_speed
-#	bullet.global_position = $Gun/Sprite.global_position
-#	bullet.rotation = $Gun.rotation
-#	get_node(world_root).add_child(bullet)
+
 
 #func walk(delta):
 #	if is_on_floor():

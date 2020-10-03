@@ -17,5 +17,5 @@ texture = ExtResource( 1 )
 texture = ExtResource( 3 )
 
 [node name="Light" type="Sprite" parent="."]
-modulate = Color( 0.352941, 2, 2, 1 )
+modulate = Color( 0.35, 1.6, 1.6, 1 )
 texture = ExtResource( 2 )

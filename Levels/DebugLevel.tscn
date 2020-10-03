@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=2]
+[gd_scene load_steps=36 format=2]
 
 [ext_resource path="res://Levels/LoadingZone.gd" type="Script" id=1]
 [ext_resource path="res://Levels/LoadingZones.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://Terrain/Platforms/platform.png" type="Texture" id=7]
 [ext_resource path="res://Props/Signs/Scenes/Sign.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Levels/Enemy.gd" type="Script" id=9]
+[ext_resource path="res://Terrain/Blocks/pipeblock.png" type="Texture" id=10]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 24, 24 )
@@ -222,6 +223,29 @@ points = PoolVector2Array( 0, 1.52588e-05, 24, 1.52588e-05, 24, 24, 0, 24 )
 "shape_transform": Transform2D( 1, 0, 0, 1, 0, 0 )
 } ]
 2/z_index = 0
+3/name = "pipeblock.png 3"
+3/texture = ExtResource( 10 )
+3/tex_offset = Vector2( 0, 0 )
+3/modulate = Color( 1, 1, 1, 1 )
+3/region = Rect2( 0, 0, 120, 96 )
+3/tile_mode = 1
+3/autotile/bitmask_mode = 1
+3/autotile/bitmask_flags = [ Vector2( 0, 0 ), 21299386, Vector2( 0, 1 ), 21299344, Vector2( 0, 2 ), 21299346, Vector2( 0, 3 ), 21299218, Vector2( 1, 0 ), 21299248, Vector2( 1, 1 ), 21299376, Vector2( 1, 2 ), 21299378, Vector2( 1, 3 ), 21299250, Vector2( 2, 0 ), 21299256, Vector2( 2, 1 ), 21299384, Vector2( 2, 2 ), 21299386, Vector2( 2, 3 ), 21299258, Vector2( 3, 0 ), 21299224, Vector2( 3, 1 ), 21299352, Vector2( 3, 2 ), 21299354, Vector2( 3, 3 ), 21299226, Vector2( 4, 0 ), 21299386, Vector2( 4, 1 ), 21299216, Vector2( 4, 2 ), 21299216, Vector2( 4, 3 ), 21299216 ]
+3/autotile/icon_coordinate = Vector2( 0, 0 )
+3/autotile/tile_size = Vector2( 24, 24 )
+3/autotile/spacing = 0
+3/autotile/occluder_map = [  ]
+3/autotile/navpoly_map = [  ]
+3/autotile/priority_map = [  ]
+3/autotile/z_index_map = [  ]
+3/occluder_offset = Vector2( 0, 0 )
+3/navigation_offset = Vector2( 0, 0 )
+3/shape_offset = Vector2( 0, 0 )
+3/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
+3/shape_one_way = false
+3/shape_one_way_margin = 0.0
+3/shapes = [  ]
+3/z_index = 0
 
 [sub_resource type="ConvexPolygonShape2D" id=2]
 points = PoolVector2Array( 24, 24, 0, 24, 0, 0, 24, 0 )
@@ -288,6 +312,12 @@ points = PoolVector2Array( 24, 24, 0, 24, 0, 0, 24, 0 )
 } ]
 1/z_index = 0
 
+[sub_resource type="ParticlesMaterial" id=32]
+flag_disable_z = true
+gravity = Vector3( 0, 98, 0 )
+orbit_velocity = 0.0
+orbit_velocity_random = 0.0
+
 [sub_resource type="RectangleShape2D" id=15]
 extents = Vector2( 12, 12 )
 
@@ -316,7 +346,7 @@ cell_size = Vector2( 24, 24 )
 collision_layer = 31775
 collision_mask = 0
 format = 1
-tile_data = PoolIntArray( 458757, 2, 0, 458758, 2, 1, 458759, 2, 1, 458760, 2, 196610, 458763, 2, 0, 458764, 2, 1, 458765, 2, 1, 458766, 2, 2, 524293, 2, 262144, 524294, 2, 65537, 524295, 2, 262145, 524296, 2, 65537, 524297, 2, 65538, 524299, 2, 262144, 524300, 2, 262145, 524301, 2, 262145, 524302, 2, 262146, 589830, 2, 131073, 589832, 2, 131073, 655365, 2, 0, 655366, 2, 196609, 655367, 2, 1, 655368, 2, 131072, 720900, 0, 0, 720901, 2, 262144, 720902, 2, 65537, 720903, 2, 262145, 720904, 2, 65537, 720905, 2, 65538, 720906, 0, 0, 786438, 2, 131073, 786440, 2, 131073, 851968, 2, 0, 851969, 2, 1, 851970, 2, 1, 851971, 2, 1, 851972, 2, 1, 851973, 2, 1, 851974, 2, 196609, 851975, 2, 1, 851976, 2, 131072, 917504, 2, 262144, 917505, 2, 262145, 917506, 2, 262145, 917507, 2, 262145, 917508, 2, 262145, 917509, 2, 262145, 917510, 2, 262145, 917511, 2, 262145, 917512, 2, 262145, 917513, 2, 65538 )
+tile_data = PoolIntArray( 262161, 3, 65540, 262165, 3, 65536, 327696, 3, 131076, 327699, 3, 65540, 327701, 3, 131072, 327703, 3, 65537, 327704, 3, 65539, 393234, 3, 131076, 393237, 3, 196608, 393239, 3, 196609, 393240, 3, 4, 393241, 3, 65539, 458757, 2, 0, 458758, 2, 1, 458759, 2, 1, 458760, 2, 196610, 458763, 2, 0, 458764, 2, 1, 458765, 2, 1, 458766, 2, 2, 458769, 3, 131076, 458771, 3, 65536, 458776, 3, 196609, 458777, 3, 196611, 524293, 2, 262144, 524294, 2, 65537, 524295, 2, 262145, 524296, 2, 65537, 524297, 2, 65538, 524299, 2, 262144, 524300, 2, 262145, 524301, 2, 262145, 524302, 2, 262146, 524307, 3, 131072, 589830, 2, 131073, 589832, 2, 131073, 589840, 3, 65537, 589841, 3, 2, 589842, 3, 2, 589843, 3, 196610, 589844, 3, 65539, 655365, 2, 0, 655366, 2, 196609, 655367, 2, 1, 655368, 2, 131072, 655374, 3, 65537, 655375, 3, 65538, 655376, 3, 196611, 655377, 2, 65536, 655378, 2, 65539, 655379, 2, 65538, 655380, 3, 131072, 720900, 0, 0, 720901, 2, 262144, 720902, 2, 65537, 720903, 2, 262145, 720904, 2, 65537, 720905, 2, 65538, 720906, 0, 0, 720910, 3, 131073, 720911, 3, 131075, 720913, 3, 1, 720914, 3, 65539, 720916, 3, 131072, 786438, 2, 131073, 786440, 2, 131073, 786442, 3, 1, 786443, 3, 65538, 786444, 3, 2, 786445, 3, 65538, 786446, 3, 131074, 786447, 3, 196610, 786448, 3, 65539, 786450, 3, 131072, 786452, 3, 196609, 786453, 3, 65539, 851968, 2, 0, 851969, 2, 1, 851970, 2, 1, 851971, 2, 1, 851972, 2, 1, 851973, 2, 1, 851974, 2, 196609, 851975, 2, 1, 851976, 2, 131072, 851979, 3, 196608, 851981, 3, 196609, 851982, 3, 131075, 851984, 3, 131073, 851985, 3, 65538, 851986, 3, 4, 851987, 3, 65539, 851989, 3, 131073, 851990, 3, 65539, 917504, 2, 262144, 917505, 2, 262145, 917506, 2, 262145, 917507, 2, 262145, 917508, 2, 262145, 917509, 2, 262145, 917510, 2, 262145, 917511, 2, 262145, 917512, 2, 262145, 917513, 2, 65538, 917518, 3, 131073, 917519, 3, 2, 917520, 3, 4, 917521, 3, 196610, 917522, 3, 4, 917523, 3, 131075, 917525, 3, 131073, 917526, 3, 196611, 983054, 3, 131072, 983056, 3, 131072, 983058, 3, 131073, 983059, 3, 196610, 983060, 3, 2, 983061, 3, 196611, 1048588, 3, 65537, 1048589, 3, 65538, 1048590, 3, 196610, 1048591, 3, 2, 1048592, 3, 196610, 1048593, 3, 2, 1048594, 3, 196611, 1114124, 3, 196609, 1114125, 3, 196611 )
 
 [node name="Player" parent="." instance=ExtResource( 4 )]
 world_root = NodePath("..")
@@ -330,8 +360,14 @@ tile_data = PoolIntArray( 262154, -1073741822, 0, 262155, -1073741822, 0, 262156
 
 [node name="ForegroundProps" type="Node2D" parent="."]
 
+[node name="Particles2D" type="Particles2D" parent="ForegroundProps"]
+position = Vector2( 200, 200 )
+process_material = SubResource( 32 )
+
 [node name="Enemy" type="KinematicBody2D" parent="."]
 position = Vector2( 250, 264 )
+collision_layer = 4
+collision_mask = 2
 script = ExtResource( 9 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Enemy"]
