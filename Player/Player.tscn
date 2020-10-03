@@ -5,7 +5,7 @@
 [ext_resource path="res://Player/Bullet.tscn" type="PackedScene" id=4]
 
 [sub_resource type="RectangleShape2D" id=1]
-extents = Vector2( 18, 36 )
+extents = Vector2( 11.5, 23.5 )
 
 [sub_resource type="SpriteFrames" id=2]
 animations = [ {
@@ -25,7 +25,7 @@ bullet_scene = ExtResource( 4 )
 shape = SubResource( 1 )
 
 [node name="Sprites" type="AnimatedSprite" parent="."]
-scale = Vector2( 0.562, 1.125 )
+scale = Vector2( 0.375, 0.75 )
 frames = SubResource( 2 )
 
 [node name="Gun" type="Node2D" parent="."]
