@@ -12,7 +12,7 @@ _global_script_classes=[ {
 "base": "",
 "class": "GitAPI",
 "language": "NativeScript",
-"path": "res://git_api.gdns"
+"path": "res://godot-git-plugin-v1.2-x11/git_api.gdns"
 } ]
 _global_script_class_icons={
 "GitAPI": ""
@@ -35,7 +35,7 @@ window/stretch/aspect="keep"
 
 [gdnative]
 
-singletons=[ "res://git_api.gdnlib" ]
+singletons=[ "res://git_api.gdnlib", "res://godot-git-plugin-v1.2-x11/git_api.gdnlib" ]
 
 [input]
 
