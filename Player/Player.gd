@@ -41,6 +41,7 @@ enum State {
 	stand_to_crouch,
 	stand_to_run,
 	stand_to_jump,
+	stand_to_air,
 	
 	run_to_stand,
 	run_to_slide,
@@ -118,6 +119,8 @@ func do_transition(delta: float):
 			state = State.jump
 		State.stand_to_run:
 			state = State.run
+		State.stand_to_air:
+			state = State.air
 
 		State.crouch_to_stand:
 			crouch_unshrink()
@@ -202,13 +205,18 @@ func do_state(delta: float):
 			air(delta)
 
 func stand(delta):
-	velocity = Vector2(0,0)
+	velocity = Vector2(0,24)
 	jump_count = 0
 	
-	if Input.is_action_pressed("move_left"):
-		state = State.stand_to_run
-	if Input.is_action_pressed("move_right"):
-		state = State.stand_to_run
+	move_and_slide(velocity, Vector2(0,-1))
+	if not is_on_floor():
+		state = State.stand_to_air
+	
+	if Input.is_action_pressed("move_left") != Input.is_action_pressed("move_right"):
+		if Input.is_action_pressed("move_left"):
+			state = State.stand_to_run
+		if Input.is_action_pressed("move_right"):
+			state = State.stand_to_run
 	if Input.is_action_pressed("jump"):
 		state = State.stand_to_jump
 	if Input.is_action_pressed("crouch"):
@@ -216,16 +224,18 @@ func stand(delta):
 
 func run(delta):
 	velocity.y = 24
+	velocity.x = 0
 	jump_count = 0
-	
-	if (Input.is_action_pressed("move_right") and velocity.x < movement_speed):
-		velocity.x = movement_speed
-	if (Input.is_action_pressed("move_left") and velocity.x > -movement_speed):
-		velocity.x = -movement_speed
+
+	if Input.is_action_pressed("move_left") != Input.is_action_pressed("move_right"):
+		if (Input.is_action_pressed("move_right") and velocity.x < movement_speed):
+			velocity.x = movement_speed
+		if (Input.is_action_pressed("move_left") and velocity.x > -movement_speed):
+			velocity.x = -movement_speed
 	
 	move_and_slide(velocity, Vector2(0,-1))
 
-	if not (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right")):
+	if Input.is_action_pressed("move_left") == Input.is_action_pressed("move_right"):
 		state = State.run_to_stand	
 	if not is_on_floor():
 		state = State.run_to_air
@@ -246,11 +256,12 @@ func air(delta):
 		velocity.y += gravity * delta * air_float_multiplier
 	else:
 		velocity.y += gravity * delta
-		
-	if (Input.is_action_pressed("move_right") and velocity.x < movement_speed):
-		velocity.x += min(movement_speed - velocity.x, movement_speed) * delta * 10
-	if (Input.is_action_pressed("move_left") and velocity.x > -movement_speed):
-		velocity.x -= min(movement_speed + velocity.x, movement_speed) * delta * 10
+	
+	if Input.is_action_pressed("move_left") != Input.is_action_pressed("move_right"):
+		if (Input.is_action_pressed("move_right") and velocity.x < movement_speed):
+			velocity.x += min(movement_speed - velocity.x, movement_speed) * delta * 10
+		if (Input.is_action_pressed("move_left") and velocity.x > -movement_speed):
+			velocity.x -= min(movement_speed + velocity.x, movement_speed) * delta * 10
 	
 	move_and_slide(velocity, Vector2(0,-1))
 	
@@ -284,7 +295,7 @@ func crouch(delta):
 	velocity.y = 24
 	move_and_slide(velocity, Vector2(0,-1))
 
-	if Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right"):
+	if Input.is_action_pressed("move_left") != Input.is_action_pressed("move_right"):
 		state = State.crouch_to_crawl
 	
 	if not Input.is_action_pressed("crouch"):
@@ -294,17 +305,18 @@ func crawl(delta):
 	jump_count = 0
 	velocity.y = 24
 	
-	if (Input.is_action_pressed("move_right") and velocity.x < movement_speed):
-		velocity.x = movement_speed * crawl_speed_multiplier
-	if (Input.is_action_pressed("move_left") and velocity.x > -movement_speed):
-		velocity.x = -movement_speed * crawl_speed_multiplier
+	if Input.is_action_pressed("move_left") != Input.is_action_pressed("move_right"):
+		if (Input.is_action_pressed("move_right") and velocity.x < movement_speed):
+			velocity.x = movement_speed * crawl_speed_multiplier
+		if (Input.is_action_pressed("move_left") and velocity.x > -movement_speed):
+			velocity.x = -movement_speed * crawl_speed_multiplier
 	
 	move_and_slide(velocity, Vector2(0,-1))
 	
 	if not is_on_floor():
 		state = State.crawl_to_air
 	if Input.is_action_pressed("crouch"):
-		if not (Input.is_action_pressed("move_left") or Input.is_action_pressed("move_right")):
+		if Input.is_action_pressed("move_left") == Input.is_action_pressed("move_right"):
 			state = State.crawl_to_crouch
 	else:
 		state = State.crawl_to_run
@@ -377,6 +389,23 @@ func object_type() -> String:
 
 var i = 0
 func _process(delta):
+	
+	if Input.is_action_pressed("move_left") != Input.is_action_pressed("move_right"):
+		if facing_right and Input.is_action_pressed("move_left"):
+				$Sprites.flip_h = true
+				$Gun.position = Vector2(-arm_position.x, arm_position.y)
+				$Gun/Sprite.position = Vector2(gun_position.x, -gun_position.y)
+				$Gun/Sprite.rotation = PI
+				$Gun/Sprite.flip_h = true
+				facing_right = false
+		elif !facing_right and Input.is_action_pressed("move_right"):
+				$Sprites.flip_h = false
+				$Gun.position = arm_position
+				$Gun/Sprite.position = gun_position
+				$Gun/Sprite.rotation = 0
+				$Gun/Sprite.flip_h = false
+				facing_right = true
+	
 	$Gun.look_at(get_global_mouse_position())
 	move_and_slide(velocity, Vector2(0,-1))
 
@@ -388,20 +417,6 @@ func _process(delta):
 	if Input.is_action_just_pressed("fire"):
 		fire()
 	
-	if Input.is_action_just_pressed("move_left"):
-			$Sprites.flip_h = true
-			$Gun.position = Vector2(-arm_position.x, arm_position.y)
-			$Gun/Sprite.position = Vector2(gun_position.x, -gun_position.y)
-			$Gun/Sprite.rotation = PI
-			$Gun/Sprite.flip_h = true
-			facing_right = false
-	if Input.is_action_just_pressed("move_right"):
-			$Sprites.flip_h = false
-			$Gun.position = arm_position
-			$Gun/Sprite.position = gun_position
-			$Gun/Sprite.rotation = 0
-			$Gun/Sprite.flip_h = false
-			facing_right = true
 
 
 
