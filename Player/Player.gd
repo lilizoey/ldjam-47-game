@@ -6,7 +6,8 @@ export var world_root: NodePath
 export var bullet_scene: PackedScene
 export var wall_jump_speed_multiplier: float = 1.5
 export var bullet_speed: float = 450
-export var crouch_shrinking: Vector2 = Vector2(0,12)
+export var crouch_shrinking: Vector2 = Vector2(0,6)
+export var slide_shrinking: Vector2 = Vector2(0,14)
 export var air_float_multiplier: float = 0.5
 export var gravity: float = 24 * 9.81
 export var jump_speed: float = gravity * 0.35
@@ -145,7 +146,8 @@ func do_transition(delta: float):
 		State.run_to_stand:
 			state = State.stand
 		State.run_to_slide:
-			crouch_shrink()
+			slide_shrink()
+			$Particles/Slide.emitting = true
 			slide_counter = slide_time
 			state = State.slide
 			
@@ -162,22 +164,32 @@ func do_transition(delta: float):
 			crouch_shrink()
 			state = State.crouch
 		State.air_to_slide:
-			crouch_shrink()
+			slide_shrink()
+			$Particles/Slide.emitting = true
 			slide_counter = slide_time
 			state = State.slide
 		
 		State.slide_to_crouch:
+			slide_unshrink()
+			crouch_shrink()
+			$Particles/Slide.emitting = false
 			state = State.crouch
 		State.slide_to_crawl:
+			slide_unshrink()
+			crouch_shrink()
+			$Particles/Slide.emitting = false
 			state = State.crawl
 		State.slide_to_stand:
-			crouch_unshrink()
+			slide_unshrink()
+			$Particles/Slide.emitting = false
 			state = State.stand
 		State.slide_to_run:
-			crouch_unshrink()
+			slide_unshrink()
+			$Particles/Slide.emitting = false
 			state = State.run
 		State.slide_to_jump:
-			crouch_unshrink()
+			slide_unshrink()
+			$Particles/Slide.emitting = false
 			state = State.jump
 		
 		_:
@@ -187,20 +199,28 @@ func do_transition(delta: float):
 func do_state(delta: float):
 	match state:
 		State.stand:
+			$Sprites.animation = "idle"
 			stand(delta)
 		State.run:
+			$Sprites.animation = "run"
 			run(delta)
 		State.jump:
+			$Sprites.animation = "jump"
 			jump(delta)
 		State.air:
+			$Sprites.animation = "air"
 			air(delta)
 		State.crouch:
+			$Sprites.animation = "crouch"
 			crouch(delta)
 		State.crawl:
+			$Sprites.animation = "crawl"
 			crawl(delta)
 		State.slide:
+			$Sprites.animation = "slide"
 			slide(delta)
 		_:
+			$Sprites.animation = "air"			
 			state = State.air
 			air(delta)
 
@@ -280,15 +300,21 @@ func air(delta):
 	if Input.is_action_just_pressed("jump"):
 		state = State.air_to_jump
 
+func shrink(shrink_size: Vector2):
+	$CollisionShape2D.position += shrink_size
+	$Gun.position += shrink_size
+	$CollisionShape2D.shape.extents -= shrink_size
+
+func unshrink(shrink_size: Vector2):
+	$CollisionShape2D.position -= shrink_size
+	$Gun.position -= shrink_size
+	$CollisionShape2D.shape.extents += shrink_size
+
 func crouch_unshrink():
-	print("unshrink")
-	position -= crouch_shrinking
-	$CollisionShape2D.shape.extents += crouch_shrinking
+	unshrink(crouch_shrinking)
 
 func crouch_shrink():
-	print("shrink")
-	position += crouch_shrinking
-	$CollisionShape2D.shape.extents -= crouch_shrinking
+	shrink(crouch_shrinking)
 
 func crouch(delta):
 	velocity.x = 0
@@ -320,6 +346,12 @@ func crawl(delta):
 			state = State.crawl_to_crouch
 	else:
 		state = State.crawl_to_run
+
+func slide_shrink():
+	shrink(slide_shrinking)
+
+func slide_unshrink():
+	unshrink(slide_shrinking)
 
 func slide_move(delta):
 	slide_counter -= delta
@@ -397,6 +429,12 @@ func _process(delta):
 				$Gun/Sprite.position = Vector2(gun_position.x, -gun_position.y)
 				$Gun/Sprite.rotation = PI
 				$Gun/Sprite.flip_h = true
+				$Particles/Slide.position = Vector2(-$Particles/Slide.position.x, $Particles/Slide.position.y)
+				$Particles/Slide.process_material.direction = Vector3(
+					-$Particles/Slide.process_material.direction.x,
+					$Particles/Slide.process_material.direction.y,
+					$Particles/Slide.process_material.direction.z
+				)
 				facing_right = false
 		elif !facing_right and Input.is_action_pressed("move_right"):
 				$Sprites.flip_h = false
@@ -404,6 +442,12 @@ func _process(delta):
 				$Gun/Sprite.position = gun_position
 				$Gun/Sprite.rotation = 0
 				$Gun/Sprite.flip_h = false
+				$Particles/Slide.position = Vector2(-$Particles/Slide.position.x, $Particles/Slide.position.y)
+				$Particles/Slide.process_material.direction = Vector3(
+					-$Particles/Slide.process_material.direction.x,
+					$Particles/Slide.process_material.direction.y,
+					$Particles/Slide.process_material.direction.z
+				)
 				facing_right = true
 	
 	$Gun.look_at(get_global_mouse_position())

@@ -1,0 +1,62 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Levels/Door.gd" type="Script" id=1]
+[ext_resource path="res://Props/Doors/door.png" type="Texture" id=2]
+
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 2 )
+region = Rect2( 5, 10, 10, 50 )
+
+[sub_resource type="RectangleShape2D" id=2]
+extents = Vector2( 5, 25 )
+
+[sub_resource type="AtlasTexture" id=3]
+atlas = ExtResource( 2 )
+region = Rect2( 24, 0, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=4]
+atlas = ExtResource( 2 )
+region = Rect2( 24, 0, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 2 )
+region = Rect2( 24, 24, 24, 24 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 2 )
+region = Rect2( 24, 48, 24, 24 )
+
+[sub_resource type="SpriteFrames" id=7]
+animations = [ {
+"frames": [ SubResource( 3 ) ],
+"loop": true,
+"name": "idle",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 4 ), SubResource( 5 ), SubResource( 6 ) ],
+"loop": true,
+"name": "moving",
+"speed": 5.0
+} ]
+
+[node name="Door" type="Node2D"]
+script = ExtResource( 1 )
+
+[node name="Slider" type="StaticBody2D" parent="."]
+
+[node name="Sprite" type="Sprite" parent="Slider"]
+texture = SubResource( 1 )
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Slider"]
+shape = SubResource( 2 )
+
+[node name="Holder" type="AnimatedSprite" parent="."]
+position = Vector2( 2, -20 )
+frames = SubResource( 7 )
+animation = "idle"
+playing = true
+
+[node name="Tween" type="Tween" parent="."]
+
+[node name="Timer" type="Timer" parent="."]
+[connection signal="timeout" from="Timer" to="." method="animation_done"]

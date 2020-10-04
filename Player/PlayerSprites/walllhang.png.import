@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/sprite.png-abce0204e6bec005d85d08e8a1dbec4b.stex"
+path="res://.import/walllhang.png-e3d6c4d7ac77de9b9672597eb4dc712f.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Player/sprite.png"
-dest_files=[ "res://.import/sprite.png-abce0204e6bec005d85d08e8a1dbec4b.stex" ]
+source_file="res://Player/PlayerSprites/walllhang.png"
+dest_files=[ "res://.import/walllhang.png-e3d6c4d7ac77de9b9672597eb4dc712f.stex" ]
 
 [params]
 

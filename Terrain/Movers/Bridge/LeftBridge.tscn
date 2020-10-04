@@ -7,7 +7,7 @@
 atlas = ExtResource( 1 )
 region = Rect2( 39, 18, 57, 18 )
 
-[sub_resource type="AtlasTexture" id=2]
+[sub_resource type="AtlasTexture" id=10]
 atlas = ExtResource( 1 )
 region = Rect2( 110, 19, 10, 17 )
 
@@ -40,7 +40,7 @@ texture = SubResource( 1 )
 
 [node name="EndNub" type="Sprite" parent="Bridge"]
 position = Vector2( -34, 0.999992 )
-texture = SubResource( 2 )
+texture = SubResource( 10 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Bridge"]
 position = Vector2( -4, 3 )
@@ -64,6 +64,7 @@ texture = SubResource( 4 )
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Anchor"]
 shape = SubResource( 7 )
+one_way_collision = true
 
 [node name="PinJoint2D" type="PinJoint2D" parent="."]
 position = Vector2( 7, -3 )
