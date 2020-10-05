@@ -50,6 +50,11 @@ func fire():
 	yield(get_tree().create_timer(charge_time), "timeout")
 	print("poof")
 	$Gun/FiringLazer.visible = true
+	var space_state = get_world_2d().direct_space_state
+	var collider = $Gun/Sprite/RayCast2D.get_collider()
+	print(collider)
+	if collider == player:
+		collider.die()
 	yield(get_tree().create_timer(firing_time), "timeout")
 	$Gun/FiringLazer.visible = false
 	yield(get_tree().create_timer(fire_delay), "timeout")

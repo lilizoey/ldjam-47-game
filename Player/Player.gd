@@ -13,7 +13,7 @@ export var gravity: float = 24 * 9.81
 export var jump_speed: float = gravity * 0.35
 export var slide_time: float = 0.6
 export var slide_multiplier: float = 2
-
+export var death_timeout: float = 0.3
 
 var facing_right = true
 var mouse_position: Vector2 = Vector2(0,0)
@@ -516,4 +516,5 @@ func give_upgrade(id: String):
 	upgrades[id] = true
 
 func die():
+	yield(get_tree().create_timer(death_timeout), "timeout")
 	emit_signal("player_has_died")

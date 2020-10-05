@@ -25,30 +25,28 @@ offset = Vector2( -8, 2 )
 
 [node name="RayCast2D" type="RayCast2D" parent="Gun/Sprite"]
 position = Vector2( -25.5, 3.5 )
-rotation = 1.5708
+enabled = true
+cast_to = Vector2( -500, 0 )
+collision_mask = 3
 
 [node name="Pointer" type="Light2D" parent="Gun"]
-position = Vector2( -25, 3.5 )
+position = Vector2( -25, -1 )
 texture = ExtResource( 6 )
 offset = Vector2( -250, 0 )
 color = Color( 1.5, 0, 0, 1 )
+range_layer_min = -1
 shadow_enabled = true
 
 [node name="FiringLazer" type="Node2D" parent="Gun"]
 visible = false
-
-[node name="Firing Lazer2" type="Light2D" parent="Gun/FiringLazer"]
-position = Vector2( -25, -1 )
-texture = ExtResource( 7 )
-offset = Vector2( -250, 0 )
-color = Color( 2, 0.6, 0, 1 )
-shadow_enabled = true
 
 [node name="Firing Lazer" type="Light2D" parent="Gun/FiringLazer"]
 position = Vector2( -25, -1 )
 texture = ExtResource( 7 )
 offset = Vector2( -250, 0 )
 color = Color( 2, 0.6, 0, 1 )
+energy = 2.0
+range_layer_min = -1
 shadow_enabled = true
 
 [node name="Base" type="StaticBody2D" parent="."]
@@ -66,10 +64,6 @@ texture = ExtResource( 4 )
 [node name="Sprite2" type="Sprite" parent="Base"]
 modulate = Color( 2.86, 1.14, 0.46, 1 )
 texture = ExtResource( 5 )
-
-[node name="RayCast2D" type="RayCast2D" parent="."]
-collision_mask = 2147483651
-collide_with_areas = true
 
 [node name="ChargeUpSound" type="AudioStreamPlayer2D" parent="."]
 stream = ExtResource( 8 )
