@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/electric_poles.png-4981e37d9cbcaa86c43b178a2773705c.stex"
+path="res://.import/sneaking_spritesheet.png-8a799b3f65e3626599c963fc200cb00b.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Hazards/electric_poles.png"
-dest_files=[ "res://.import/electric_poles.png-4981e37d9cbcaa86c43b178a2773705c.stex" ]
+source_file="res://Player/PlayerSprites/sneaking_spritesheet.png"
+dest_files=[ "res://.import/sneaking_spritesheet.png-8a799b3f65e3626599c963fc200cb00b.stex" ]
 
 [params]
 

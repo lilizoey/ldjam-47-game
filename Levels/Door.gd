@@ -43,7 +43,7 @@ func animation_done():
 	if state == State.opening:
 		state = State.open
 
-func _process(delta):
+func _process(_delta):
 	if state >= State.closing:
 		$Holder.animation = "moving"
 	else:

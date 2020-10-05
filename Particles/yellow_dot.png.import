@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/electric_poles.png-4981e37d9cbcaa86c43b178a2773705c.stex"
+path="res://.import/yellow_dot.png-8e01ad8a4ae67b30ffecb0a5704352ed.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Hazards/electric_poles.png"
-dest_files=[ "res://.import/electric_poles.png-4981e37d9cbcaa86c43b178a2773705c.stex" ]
+source_file="res://Particles/yellow_dot.png"
+dest_files=[ "res://.import/yellow_dot.png-8e01ad8a4ae67b30ffecb0a5704352ed.stex" ]
 
 [params]
 

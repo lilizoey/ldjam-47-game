@@ -1,13 +1,15 @@
-[gd_scene load_steps=16 format=2]
+[gd_scene load_steps=28 format=2]
 
 [ext_resource path="res://Player/Player.gd" type="Script" id=1]
 [ext_resource path="res://Player/arm.png" type="Texture" id=2]
 [ext_resource path="res://Player/PlayerSprites/crouch.png" type="Texture" id=3]
 [ext_resource path="res://Player/Bullet.tscn" type="PackedScene" id=4]
-[ext_resource path="res://Player/PlayerSprites/slide.png" type="Texture" id=5]
+[ext_resource path="res://Player/PlayerSprites/sliding_spritesheet.png" type="Texture" id=5]
 [ext_resource path="res://Player/PlayerSprites/walllhang.png" type="Texture" id=6]
 [ext_resource path="res://Player/PlayerSprites/idle.png" type="Texture" id=7]
 [ext_resource path="res://Particles/slide.png" type="Texture" id=8]
+[ext_resource path="res://Player/PlayerSprites/running_spritesheet.png" type="Texture" id=9]
+[ext_resource path="res://Player/PlayerSprites/sneaking_spritesheet.png" type="Texture" id=10]
 
 [sub_resource type="Curve" id=1]
 _data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0.490909 ), 0.0, 0.0, 0, 0 ]
@@ -43,46 +45,86 @@ anim_offset = 1.0
 [sub_resource type="RectangleShape2D" id=6]
 extents = Vector2( 10, 23.5 )
 
-[sub_resource type="SpriteFrames" id=7]
+[sub_resource type="AtlasTexture" id=12]
+atlas = ExtResource( 5 )
+region = Rect2( 0, 0, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = ExtResource( 5 )
+region = Rect2( 48, 0, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=14]
+atlas = ExtResource( 5 )
+region = Rect2( 96, 0, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=15]
+atlas = ExtResource( 10 )
+region = Rect2( 0, 0, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=16]
+atlas = ExtResource( 10 )
+region = Rect2( 48, 0, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=17]
+atlas = ExtResource( 10 )
+region = Rect2( 96, 0, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 9 )
+region = Rect2( 0, 0, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 9 )
+region = Rect2( 48, 0, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 9 )
+region = Rect2( 96, 0, 48, 48 )
+
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 9 )
+region = Rect2( 0, 0, 48, 48 )
+
+[sub_resource type="SpriteFrames" id=10]
 animations = [ {
-"frames": [ ExtResource( 5 ), null ],
+"frames": [ SubResource( 12 ), SubResource( 13 ), SubResource( 14 ) ],
 "loop": true,
 "name": "slide",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 7 ), null ],
+"frames": [ ExtResource( 7 ) ],
 "loop": true,
 "name": "idle",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 3 ), null ],
+"frames": [ ExtResource( 6 ) ],
+"loop": true,
+"name": "wall hang",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 15 ), SubResource( 16 ), SubResource( 17 ) ],
 "loop": true,
 "name": "crawl",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 3 ), null ],
+"frames": [ ExtResource( 3 ) ],
 "loop": true,
 "name": "crouch",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 7 ), null ],
+"frames": [ SubResource( 7 ), SubResource( 8 ), SubResource( 9 ) ],
 "loop": true,
 "name": "run",
-"speed": 5.0
+"speed": 10.0
 }, {
-"frames": [ ExtResource( 7 ), null ],
+"frames": [ ExtResource( 7 ) ],
 "loop": true,
 "name": "jump",
 "speed": 5.0
 }, {
-"frames": [ ExtResource( 7 ), null ],
+"frames": [ SubResource( 11 ) ],
 "loop": true,
 "name": "air",
-"speed": 5.0
-}, {
-"frames": [ ExtResource( 6 ), null ],
-"loop": true,
-"name": "wall hang",
 "speed": 5.0
 } ]
 
@@ -116,8 +158,9 @@ texture = ExtResource( 2 )
 
 [node name="Sprites" type="AnimatedSprite" parent="."]
 position = Vector2( 0, 1 )
-frames = SubResource( 7 )
-animation = "idle"
+frames = SubResource( 10 )
+animation = "air"
+playing = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true

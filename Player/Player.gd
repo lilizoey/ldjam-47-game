@@ -30,6 +30,8 @@ onready var gun_position: Vector2 = $Gun/Sprite.position
 
 var upgrades: Dictionary = Dictionary()
 
+signal player_has_died()
+
 enum State {
 	stand,
 	run,
@@ -114,7 +116,7 @@ export var max_hang_velocity: float = gravity * 0.1
 func _ready():
 	pass # Replace with function body.
 
-func do_transition(delta: float):
+func do_transition(_delta: float):
 	match state:
 		State.stand_to_crouch:
 			crouch_shrink()
@@ -250,11 +252,11 @@ func do_state(delta: float):
 			state = State.air
 			air(delta)
 
-func stand(delta):
+func stand(_delta):
 	velocity = Vector2(0,24)
 	jump_count = 0
 	
-	move_and_slide(velocity, Vector2(0,-1))
+	var _b = move_and_slide(velocity, Vector2(0,-1))
 	if not is_on_floor():
 		state = State.stand_to_air
 	
@@ -268,7 +270,7 @@ func stand(delta):
 	if Input.is_action_pressed("crouch"):
 		state = State.stand_to_crouch
 
-func run(delta):
+func run(_delta):
 	velocity.y = gravity
 	velocity.x = 0
 	jump_count = 0
@@ -279,7 +281,7 @@ func run(delta):
 		if (Input.is_action_pressed("move_left") and velocity.x > -movement_speed):
 			velocity.x = -movement_speed
 	
-	move_and_slide(velocity, Vector2(0,-1))
+	var _b = move_and_slide(velocity, Vector2(0,-1))
 
 	if Input.is_action_pressed("move_left") == Input.is_action_pressed("move_right"):
 		state = State.run_to_stand
@@ -293,7 +295,7 @@ func run(delta):
 	if Input.is_action_pressed("crouch"):
 		state = State.run_to_slide
 
-func jump(delta):
+func jump(_delta):
 	if jump_count < max_jumps:
 		velocity.y = -jump_speed
 		jump_count += 1
@@ -312,7 +314,7 @@ func air(delta):
 		if (Input.is_action_pressed("move_left") and velocity.x > -movement_speed):
 			velocity.x -= min(movement_speed + velocity.x, movement_speed) * delta * 10
 	
-	move_and_slide(velocity, Vector2(0,-1))
+	var _b = move_and_slide(velocity, Vector2(0,-1))
 	
 	if is_on_ceiling():
 		velocity.y = 0
@@ -340,7 +342,6 @@ func unshrink(shrink_size: Vector2):
 	$CollisionShape2D.position -= shrink_size
 	$Gun.position -= shrink_size
 	$CollisionShape2D.shape.extents += shrink_size
-	var original_pos = Vector2(round(global_position.x), round(global_position.y))
 	global_position.y -= 1
 	if check_if_stuck():
 		global_position.y += 1
@@ -356,10 +357,10 @@ func crouch_unshrink():
 func crouch_shrink():
 	shrink(crouch_shrinking)
 
-func crouch(delta):
+func crouch(_delta):
 	velocity.x = 0
 	velocity.y = 24
-	move_and_slide(velocity, Vector2(0,-1))
+	var _b = move_and_slide(velocity, Vector2(0,-1))
 
 	if Input.is_action_pressed("move_left") != Input.is_action_pressed("move_right"):
 		state = State.crouch_to_crawl
@@ -367,7 +368,7 @@ func crouch(delta):
 	if not Input.is_action_pressed("crouch"):
 		state = State.crouch_to_stand
 
-func crawl(delta):
+func crawl(_delta):
 	jump_count = 0
 	velocity.y = 24
 	
@@ -377,7 +378,7 @@ func crawl(delta):
 		if (Input.is_action_pressed("move_left") and velocity.x > -movement_speed):
 			velocity.x = -movement_speed * crawl_speed_multiplier
 	
-	move_and_slide(velocity, Vector2(0,-1))
+	var _b = move_and_slide(velocity, Vector2(0,-1))
 	
 	if not is_on_floor():
 		state = State.crawl_to_air
@@ -416,7 +417,7 @@ func slide_move(delta):
 	else:
 		velocity.x = -slide_speed
 	
-	move_and_slide(velocity, Vector2(0,-1))
+	var _b = move_and_slide(velocity, Vector2(0,-1))
 	
 	if not is_on_floor():
 		state = State.slide_to_air
@@ -453,7 +454,7 @@ func fire():
 		new_offset.y = -bullet_offset.y
 	bullet.translate(new_offset.rotated($Gun.rotation))
 	bullet.rotation = $Gun.rotation
-	get_node(world_root).add_child(bullet)
+	get_parent().add_child(bullet)
 
 func object_type() -> String:
 	return "player"
@@ -493,7 +494,7 @@ func _process(delta):
 	
 	
 	$Gun.look_at(get_global_mouse_position())
-	move_and_slide(velocity, Vector2(0,-1))
+	var _b = move_and_slide(velocity, Vector2(0,-1))
 
 	if state > State.wall_jump:
 		do_transition(delta)
@@ -512,5 +513,7 @@ func check_if_stuck():
 		   test_move(transform, Vector2(0,-1))
 
 func give_upgrade(id: String):
-	print("aaa")
 	upgrades[id] = true
+
+func die():
+	emit_signal("player_has_died")
