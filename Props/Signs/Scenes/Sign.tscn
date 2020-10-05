@@ -5,7 +5,6 @@
 [ext_resource path="res://Props/Signs/sign-1-neon.png" type="Texture" id=3]
 
 [node name="Sign-1" type="Node2D"]
-position = Vector2( 100, 250 )
 __meta__ = {
 "_editor_description_": "A glowing sign that says ÆgirFrakt in runes"
 }
@@ -14,7 +13,6 @@ __meta__ = {
 texture = ExtResource( 1 )
 
 [node name="Glow" type="Sprite" parent="."]
-visible = false
 texture = ExtResource( 3 )
 
 [node name="Light" type="Sprite" parent="."]

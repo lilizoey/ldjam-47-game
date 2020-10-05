@@ -89,8 +89,8 @@ position = Vector2( 385, -214 )
 
 [node name="East" parent="LoadingZones" instance=ExtResource( 1 )]
 position = Vector2( 501, 73 )
-new_level = "ParallaxTest"
-target_zone = "Default"
+new_level = "Level3"
+target_zone = "West"
 
 [node name="West" parent="LoadingZones" instance=ExtResource( 1 )]
 position = Vector2( -335, 73 )

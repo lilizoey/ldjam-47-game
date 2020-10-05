@@ -513,10 +513,10 @@ func _process(delta):
 	
 
 func check_if_stuck():
-	return $Down.is_colliding() or \
-		$Right.is_colliding() or \
-		$Up.is_colliding() or \
-		$Left.is_colliding()
+	return ($Down.is_colliding() and 
+		$Up.is_colliding() and \
+		$Right.is_colliding() and 
+		$Left.is_colliding())
 	
 
 func give_upgrade(id: String):

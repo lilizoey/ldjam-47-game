@@ -30,7 +30,7 @@ cast_to = Vector2( -500, 0 )
 collision_mask = 3
 
 [node name="Pointer" type="Light2D" parent="Gun"]
-position = Vector2( -25, -1 )
+position = Vector2( -25, 3.5 )
 texture = ExtResource( 6 )
 offset = Vector2( -250, 0 )
 color = Color( 1.5, 0, 0, 1 )
