@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/box-1.png-1cde43030290eae6dd4d9a344e77f598.stex"
+path="res://.import/exitlgihj.png-b0ea10ebe4ea8904ef05cbfc8fb492a5.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Props/Boxes/box-1.png"
-dest_files=[ "res://.import/box-1.png-1cde43030290eae6dd4d9a344e77f598.stex" ]
+source_file="res://Props/Signs/Hanging/exitlgihj.png"
+dest_files=[ "res://.import/exitlgihj.png-b0ea10ebe4ea8904ef05cbfc8fb492a5.stex" ]
 
 [params]
 
