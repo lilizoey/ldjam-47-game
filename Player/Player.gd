@@ -18,9 +18,8 @@ export var death_timeout: float = 0.3
 var facing_right = true
 var mouse_position: Vector2 = Vector2(0,0)
 var velocity: Vector2 = Vector2(0,0)
-
-var max_jumps: int = 2
-var jump_count: int = 0
+export var max_jumps: int = 1
+export var jump_count: int = 0
 var bullet_offset: Vector2 = Vector2(0,-6)
 
 var slide_counter: float = slide_time
@@ -266,6 +265,7 @@ func stand(_delta):
 		if Input.is_action_pressed("move_right"):
 			state = State.stand_to_run
 	if Input.is_action_pressed("jump"):
+		jump_count = -1
 		state = State.stand_to_jump
 	if Input.is_action_pressed("crouch"):
 		state = State.stand_to_crouch
@@ -291,6 +291,7 @@ func run(_delta):
 	if is_on_wall():
 		state = State.run_to_stand
 	if Input.is_action_pressed("jump"):
+		jump_count = -1
 		state = State.run_to_jump
 	if Input.is_action_pressed("crouch"):
 		state = State.run_to_slide
@@ -318,6 +319,9 @@ func air(delta):
 	
 	if is_on_ceiling():
 		velocity.y = 0
+	
+	if is_on_wall():
+		velocity.x = 0
 	
 	if is_on_floor():
 		if (facing_right and Input.is_action_pressed("crouch") and Input.is_action_pressed("move_right")) or \
@@ -443,9 +447,11 @@ func slide(delta):
 			state = State.slide_to_stand
 	
 	if Input.is_action_pressed("jump"):
+		jump_count = -1
 		state = State.slide_to_jump
 
 func fire():
+	return
 	var bullet: KinematicBody2D = bullet_scene.instance()
 	bullet.bullet_speed = bullet_speed
 	bullet.global_position = $Gun/Sprite.global_position
@@ -507,10 +513,11 @@ func _process(delta):
 	
 
 func check_if_stuck():
-	return test_move(transform, Vector2(1,0)) and \
-		   test_move(transform, Vector2(-1,0)) and \
-		   test_move(transform, Vector2(0,1)) and \
-		   test_move(transform, Vector2(0,-1))
+	return $Down.is_colliding() or \
+		$Right.is_colliding() or \
+		$Up.is_colliding() or \
+		$Left.is_colliding()
+	
 
 func give_upgrade(id: String):
 	upgrades[id] = true

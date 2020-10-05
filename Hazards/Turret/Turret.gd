@@ -48,6 +48,8 @@ func fire():
 	can_fire = false
 	$ChargeUpSound.play()
 	yield(get_tree().create_timer(charge_time), "timeout")
+	if !is_inside_tree():
+		return
 	print("poof")
 	$Gun/FiringLazer.visible = true
 	var space_state = get_world_2d().direct_space_state
@@ -56,7 +58,11 @@ func fire():
 	if collider == player:
 		collider.die()
 	yield(get_tree().create_timer(firing_time), "timeout")
+	if !is_inside_tree():
+		return
 	$Gun/FiringLazer.visible = false
 	yield(get_tree().create_timer(fire_delay), "timeout")
+	if !is_inside_tree():
+		return
 	can_fire = true
 	
