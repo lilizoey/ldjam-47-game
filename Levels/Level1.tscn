@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://Meta/LoadingZone.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Meta/LoadingZones.gd" type="Script" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://Props/Lights/Ceiling Lamp.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Background/Parallax.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Props/Signs/Scenes/Sign Hanging 1.tscn" type="PackedScene" id=10]
+[ext_resource path="res://Props/Buttons/Button.tscn" type="PackedScene" id=11]
 
 [node name="Level" type="Node2D"]
 script = ExtResource( 5 )
@@ -46,9 +47,9 @@ rotation = 1.5708
 
 [node name="Door3" parent="Background/Props" instance=ExtResource( 7 )]
 position = Vector2( 444, 80 )
-state = 0
 
 [node name="Ceiling Lamp" parent="Background/Props" instance=ExtResource( 8 )]
+visible = false
 position = Vector2( 37, -104 )
 
 [node name="Ceiling Lamp2" parent="Background/Props" instance=ExtResource( 8 )]
@@ -68,6 +69,10 @@ tile_data = PoolIntArray( -458765, 4, 8, -458764, 4, 10, -458763, 4, 10, -458762
 [node name="Foreground" type="Node2D" parent="."]
 
 [node name="Props" type="Node2D" parent="Foreground"]
+
+[node name="Button" parent="Foreground/Props" instance=ExtResource( 11 )]
+position = Vector2( 166, 82 )
+door_path = NodePath("../../../Background/Props/Door3")
 
 [node name="TileMap" type="TileMap" parent="Foreground"]
 tile_set = ExtResource( 3 )
@@ -104,4 +109,8 @@ position = Vector2( 464, 73 )
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
 color = Color( 0.27451, 0.27451, 0.27451, 1 )
+
+[node name="Button" parent="." instance=ExtResource( 11 )]
+position = Vector2( -109, -62 )
+door_path = NodePath("../Background/Props/Door4")
 [connection signal="player_hit_transition" from="LoadingZones" to="." method="_on_LoadingZones_player_hit_transition"]
