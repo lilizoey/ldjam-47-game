@@ -1,0 +1,61 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Meta/LoadingZone.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Levels/LoadingZones.gd" type="Script" id=2]
+[ext_resource path="res://Terrain/GenericTileset.tres" type="TileSet" id=3]
+[ext_resource path="res://Player/Player.tscn" type="PackedScene" id=4]
+[ext_resource path="res://Levels/Level.gd" type="Script" id=5]
+[ext_resource path="res://Meta/TargetZone.tscn" type="PackedScene" id=6]
+
+[node name="Level" type="Node2D"]
+script = ExtResource( 5 )
+
+[node name="Background" type="Node2D" parent="."]
+
+[node name="Background" type="CanvasLayer" parent="Background"]
+layer = -1
+
+[node name="Wall" type="TileMap" parent="Background"]
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 24, 24 )
+format = 1
+
+[node name="Decorations" type="TileMap" parent="Background"]
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 24, 24 )
+format = 1
+
+[node name="Props" type="Node2D" parent="Background"]
+
+[node name="Midground" type="Node2D" parent="."]
+
+[node name="TileMap" type="TileMap" parent="Midground"]
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 24, 24 )
+format = 1
+tile_data = PoolIntArray( 393207, 4, 8, 393208, 4, 10, 393209, 4, 10, 393210, 4, 10, 393211, 4, 10, 393212, 4, 10, 393213, 4, 10, 393214, 4, 10, 393215, 4, 10, 327680, 4, 10, 327681, 4, 10, 327682, 4, 10, 327683, 4, 10, 327684, 4, 10, 327685, 4, 10, 327686, 4, 10, 327687, 4, 10, 327688, 4, 11, 458743, 4, 196616, 458744, 4, 196617, 458745, 4, 196617, 458746, 4, 196617, 458747, 4, 196617, 458748, 4, 196617, 458749, 4, 196617, 458750, 4, 196617, 458751, 4, 196617, 393216, 4, 196617, 393217, 4, 196617, 393218, 4, 196617, 393219, 4, 196617, 393220, 4, 196617, 393221, 4, 196617, 393222, 4, 196617, 393223, 4, 196617, 393224, 4, 196619 )
+
+[node name="Player" parent="Midground" instance=ExtResource( 4 )]
+
+[node name="Foreground" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="Foreground"]
+
+[node name="TileMap" type="TileMap" parent="Foreground"]
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 24, 24 )
+format = 1
+
+[node name="LoadingZones" type="Node2D" parent="."]
+script = ExtResource( 2 )
+
+[node name="East" parent="LoadingZones" instance=ExtResource( 1 )]
+position = Vector2( 207, 96 )
+new_level = "Level1"
+target_zone = "West"
+
+[node name="TargetZones" type="Node2D" parent="."]
+
+[node name="Default" parent="TargetZones" instance=ExtResource( 6 )]
+position = Vector2( 169, 96 )
+[connection signal="player_hit_transition" from="LoadingZones" to="." method="_on_LoadingZones_player_hit_transition"]

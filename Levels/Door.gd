@@ -9,7 +9,11 @@ enum State {
 	opening
 }
 
-var state = State.closed
+export var state = State.closed
+
+func _ready():
+	if state == State.open:
+		$Slider.position = Vector2(0,-57)
 
 func open():
 	if state == State.closed:

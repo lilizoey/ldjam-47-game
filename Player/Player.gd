@@ -28,6 +28,8 @@ var slide_counter: float = slide_time
 onready var arm_position: Vector2 = $Gun.position
 onready var gun_position: Vector2 = $Gun/Sprite.position
 
+var upgrades: Dictionary = Dictionary()
+
 enum State {
 	stand,
 	run,
@@ -63,6 +65,7 @@ enum State {
 	slide_to_stand,
 	slide_to_run,
 	slide_to_jump,
+	slide_to_air,
 	
 	jump_to_air,
 	
@@ -170,27 +173,50 @@ func do_transition(delta: float):
 			state = State.slide
 		
 		State.slide_to_crouch:
-			slide_unshrink()
+			if not slide_unshrink():
+				slide_shrink()
+				state = State.slide
+				return
 			crouch_shrink()
 			$Particles/Slide.emitting = false
 			state = State.crouch
 		State.slide_to_crawl:
-			slide_unshrink()
+			if not slide_unshrink():
+				slide_shrink()
+				state = State.slide
+				return
 			crouch_shrink()
 			$Particles/Slide.emitting = false
 			state = State.crawl
 		State.slide_to_stand:
-			slide_unshrink()
+			if not slide_unshrink():
+				slide_shrink()
+				state = State.slide
+				return
 			$Particles/Slide.emitting = false
 			state = State.stand
 		State.slide_to_run:
-			slide_unshrink()
+			if not slide_unshrink():
+				slide_shrink()
+				state = State.slide
+				return
 			$Particles/Slide.emitting = false
 			state = State.run
 		State.slide_to_jump:
-			slide_unshrink()
+			if not slide_unshrink():
+				slide_shrink()
+				state = State.slide
+				return
 			$Particles/Slide.emitting = false
 			state = State.jump
+		State.slide_to_air:
+			if not slide_unshrink():
+				slide_shrink()
+				state = State.slide
+				return
+			$Particles/Slide.emitting = false
+			state = State.air
+			
 		
 		_:
 			push_warning("warning, got unrecognized state-transition: " + state_to_name(state))
@@ -243,7 +269,7 @@ func stand(delta):
 		state = State.stand_to_crouch
 
 func run(delta):
-	velocity.y = 24
+	velocity.y = gravity
 	velocity.x = 0
 	jump_count = 0
 
@@ -256,9 +282,12 @@ func run(delta):
 	move_and_slide(velocity, Vector2(0,-1))
 
 	if Input.is_action_pressed("move_left") == Input.is_action_pressed("move_right"):
-		state = State.run_to_stand	
+		state = State.run_to_stand
 	if not is_on_floor():
 		state = State.run_to_air
+		velocity.y = 0
+	if is_on_wall():
+		state = State.run_to_stand
 	if Input.is_action_pressed("jump"):
 		state = State.run_to_jump
 	if Input.is_action_pressed("crouch"):
@@ -301,17 +330,28 @@ func air(delta):
 		state = State.air_to_jump
 
 func shrink(shrink_size: Vector2):
+	print("shrink")
 	$CollisionShape2D.position += shrink_size
 	$Gun.position += shrink_size
 	$CollisionShape2D.shape.extents -= shrink_size
 
 func unshrink(shrink_size: Vector2):
+	print("unshrink")
 	$CollisionShape2D.position -= shrink_size
 	$Gun.position -= shrink_size
 	$CollisionShape2D.shape.extents += shrink_size
-
+	var original_pos = Vector2(round(global_position.x), round(global_position.y))
+	global_position.y -= 1
+	if check_if_stuck():
+		global_position.y += 1
+		return false
+	else:
+		global_position.y += 1
+		return true
+		
+	
 func crouch_unshrink():
-	unshrink(crouch_shrinking)
+	return unshrink(crouch_shrinking)
 
 func crouch_shrink():
 	shrink(crouch_shrinking)
@@ -351,13 +391,13 @@ func slide_shrink():
 	shrink(slide_shrinking)
 
 func slide_unshrink():
-	unshrink(slide_shrinking)
+	return unshrink(slide_shrinking)
 
 func slide_move(delta):
 	slide_counter -= delta
 	jump_count = 0
 	
-	var slide_speed = movement_speed * slide_multiplier * (slide_counter / slide_time)
+	var slide_speed = movement_speed * slide_multiplier * max(slide_counter / slide_time, 0.1)
 	
 	if slide_counter <= 0:
 		if Input.is_action_pressed("crouch"):
@@ -377,30 +417,29 @@ func slide_move(delta):
 		velocity.x = -slide_speed
 	
 	move_and_slide(velocity, Vector2(0,-1))
+	
+	if not is_on_floor():
+		state = State.slide_to_air
 
 func slide(delta):
 	if facing_right:
 		if Input.is_action_pressed("move_right"):
 			slide_move(delta)
+		elif Input.is_action_pressed("crouch"):
+			state = State.slide_to_crouch
 		elif Input.is_action_pressed("move_left"):
-			slide_counter -= delta
-			slide_move(delta)
+			state = State.slide_to_run
 		else:
-			if Input.is_action_pressed("crouch"):
-				state = State.slide_to_crouch
-			else:
-				state = State.slide_to_stand
+			state = State.slide_to_stand
 	else:
 		if Input.is_action_pressed("move_left"):
 			slide_move(delta)
+		elif Input.is_action_pressed("crouch"):
+			state = State.slide_to_crouch
 		elif Input.is_action_pressed("move_right"):
-			slide_counter -= delta
-			slide_move(delta)
+			state = State.slide_to_run
 		else:
-			if Input.is_action_pressed("crouch"):
-				state = State.slide_to_crouch
-			else:
-				state = State.slide_to_stand
+			state = State.slide_to_stand
 	
 	if Input.is_action_pressed("jump"):
 		state = State.slide_to_jump
@@ -419,10 +458,12 @@ func fire():
 func object_type() -> String:
 	return "player"
 
+func can_flip():
+	return state != State.slide and state < State.stand_to_crouch
+
 var i = 0
 func _process(delta):
-	
-	if Input.is_action_pressed("move_left") != Input.is_action_pressed("move_right"):
+	if can_flip() and Input.is_action_pressed("move_left") != Input.is_action_pressed("move_right"):
 		if facing_right and Input.is_action_pressed("move_left"):
 				$Sprites.flip_h = true
 				$Gun.position = Vector2(-arm_position.x, arm_position.y)
@@ -450,6 +491,7 @@ func _process(delta):
 				)
 				facing_right = true
 	
+	
 	$Gun.look_at(get_global_mouse_position())
 	move_and_slide(velocity, Vector2(0,-1))
 
@@ -461,98 +503,14 @@ func _process(delta):
 	if Input.is_action_just_pressed("fire"):
 		fire()
 	
+	
 
+func check_if_stuck():
+	return test_move(transform, Vector2(1,0)) and \
+		   test_move(transform, Vector2(-1,0)) and \
+		   test_move(transform, Vector2(0,1)) and \
+		   test_move(transform, Vector2(0,-1))
 
-
-func apply_gravity(delta):
-	velocity.y += gravity * delta
-
-#func on_floor(delta):
-#	jump_count = 0
-#	apply_gravity(delta)
-#	velocity = Vector2(0,0)
-#	
-#	if (Input.is_action_pressed("move_right") and velocity.x < movement_speed):
-#		velocity.x += min(movement_speed - velocity.x, movement_speed)
-#	if (Input.is_action_pressed("move_left") and velocity.x > -movement_speed):
-#		velocity.x -= min(movement_speed + velocity.x, movement_speed)
-#	
-#	if crouch_state == CrouchState.standing and Input.is_action_pressed("crouch"):
-#		crouch_state = CrouchState.do_crouch
-#	
-#	jump(delta)
-
-#func on_wall(delta):
-#	apply_gravity(delta)
-#	velocity.x = 0
-#	
-#	if (Input.is_action_pressed("move_right") and velocity.x < movement_speed):
-#		velocity.x += min(movement_speed - velocity.x, movement_speed) * delta * 10
-#	if (Input.is_action_pressed("move_left") and velocity.x > -movement_speed):
-#		velocity.x -= min(movement_speed + velocity.x, movement_speed) * delta * 10
-#	
-#	if Input.is_action_just_pressed("jump"):
-#		wall_jump(delta)
-
-#func on_ceiling(delta):
-#	velocity.y = 0
-#	apply_gravity(delta)
-
-#func in_air(delta):
-#	apply_gravity(delta)
-#	
-#	if (Input.is_action_pressed("move_right") and velocity.x < movement_speed):
-#		velocity.x += min(movement_speed - velocity.x, movement_speed) * delta * 10
-#	if (Input.is_action_pressed("move_left") and velocity.x > -movement_speed):
-#		velocity.x -= min(movement_speed + velocity.x, movement_speed) * delta * 10
-#	
-#	jump(delta)
-
-func _input(event):
-	pass
-#	if event is InputEventMouseButton and (event as InputEventMouseButton).pressed:
-#		fire()
-
-
-
-#func walk(delta):
-#	if is_on_floor():
-#		if (Input.is_action_pressed("move_right") and velocity.x < movement_speed):
-#			velocity.x += min(movement_speed - velocity.x, movement_speed)
-#		if (Input.is_action_pressed("move_left") and velocity.x > -movement_speed):
-#			velocity.x -= min(movement_speed + velocity.x, movement_speed)
-#	else:
-#		if (Input.is_action_pressed("move_right") and velocity.x < movement_speed):
-#			velocity.x += min(movement_speed - velocity.x, movement_speed) * delta * 10
-#		if (Input.is_action_pressed("move_left") and velocity.x > -movement_speed):
-#			velocity.x -= min(movement_speed + velocity.x, movement_speed) * delta * 10
-
-#func jump(delta):
-#	if (Input.is_action_just_pressed("jump")) and max_jumps > jump_count:
-#		velocity.y = -jump_speed
-#		jump_count += 1
-
-#func wall_jump(delta):
-#	for i in get_slide_count():
-#		var collision = get_slide_collision(i)
-#		if collision.normal.x > 0 and velocity.x < 0:
-#			jump_count -= 1
-#			jump(delta)
-#			velocity.x = jump_speed * wall_jump_speed_multiplier
-#		elif collision.normal.x < 0 and velocity.x > 0:
-#			jump_count -= 1
-#			jump(delta)
-#			velocity.x = -jump_speed * wall_jump_speed_multiplier
-
-#func handle_crouching():
-#	if crouch_state == CrouchState.do_crouch:
-#		$CollisionShape2D.shape.extents -= crouch_shrinking
-#		position += crouch_shrinking
-#		crouch_state = CrouchState.crouched
-#		print("crouch:", $CollisionShape2D.shape.extents)
-#
-#	if crouch_state == CrouchState.do_stand:
-#		$CollisionShape2D.shape.extents += crouch_shrinking
-#		position -= crouch_shrinking
-#		crouch_state = CrouchState.standing
-#		print("stand:", $CollisionShape2D.shape.extents)
+func give_upgrade(id: String):
+	print("aaa")
+	upgrades[id] = true

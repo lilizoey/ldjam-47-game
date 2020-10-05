@@ -1,0 +1,47 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Levels/LoadingZones.gd" type="Script" id=2]
+[ext_resource path="res://Terrain/GenericTileset.tres" type="TileSet" id=3]
+[ext_resource path="res://Levels/Level.gd" type="Script" id=5]
+
+[node name="Level" type="Node2D"]
+script = ExtResource( 5 )
+
+[node name="Background" type="Node2D" parent="."]
+
+[node name="Background" type="CanvasLayer" parent="Background"]
+layer = -1
+
+[node name="Wall" type="TileMap" parent="Background"]
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 24, 24 )
+format = 1
+
+[node name="Decorations" type="TileMap" parent="Background"]
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 24, 24 )
+format = 1
+
+[node name="Props" type="Node2D" parent="Background"]
+
+[node name="Midground" type="Node2D" parent="."]
+
+[node name="TileMap" type="TileMap" parent="Midground"]
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 24, 24 )
+format = 1
+
+[node name="Foreground" type="Node2D" parent="."]
+
+[node name="Props" type="Node2D" parent="Foreground"]
+
+[node name="TileMap" type="TileMap" parent="Foreground"]
+tile_set = ExtResource( 3 )
+cell_size = Vector2( 24, 24 )
+format = 1
+
+[node name="LoadingZones" type="Node2D" parent="."]
+script = ExtResource( 2 )
+
+[node name="TargetZones" type="Node2D" parent="."]
+[connection signal="player_hit_transition" from="LoadingZones" to="." method="_on_LoadingZones_player_hit_transition"]
