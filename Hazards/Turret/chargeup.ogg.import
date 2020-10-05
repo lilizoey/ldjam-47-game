@@ -1,0 +1,15 @@
+[remap]
+
+importer="ogg_vorbis"
+type="AudioStreamOGGVorbis"
+path="res://.import/chargeup.ogg-78d04958b955dbc3d19101cf3c4eafec.oggstr"
+
+[deps]
+
+source_file="res://Hazards/Turret/chargeup.ogg"
+dest_files=[ "res://.import/chargeup.ogg-78d04958b955dbc3d19101cf3c4eafec.oggstr" ]
+
+[params]
+
+loop=false
+loop_offset=0

@@ -1,7 +1,7 @@
 [gd_scene load_steps=17 format=2]
 
-[ext_resource path="res://Levels/LoadingZone.gd" type="Script" id=1]
-[ext_resource path="res://Levels/LoadingZones.gd" type="Script" id=2]
+[ext_resource path="res://Meta/LoadingZone.gd" type="Script" id=1]
+[ext_resource path="res://Meta/LoadingZones.gd" type="Script" id=2]
 [ext_resource path="res://icon.png" type="Texture" id=3]
 [ext_resource path="res://Player/Player.tscn" type="PackedScene" id=4]
 [ext_resource path="res://Levels/Level.gd" type="Script" id=5]
@@ -10,6 +10,7 @@
 [ext_resource path="res://Props/Signs/Scenes/Sign.tscn" type="PackedScene" id=8]
 [ext_resource path="res://Levels/Enemy.gd" type="Script" id=9]
 [ext_resource path="res://Terrain/Movers/Bridge/LeftBridge.tscn" type="PackedScene" id=11]
+
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 24, 24 )
